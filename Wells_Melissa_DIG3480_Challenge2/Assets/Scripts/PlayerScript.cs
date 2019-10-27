@@ -17,6 +17,7 @@ public class PlayerScript : MonoBehaviour
 
     Animator anim;
 
+    private bool facingRight = true;
     private int scoreValue = 0; //score deafault
     private int livesValue = 3; //lives default
 
@@ -75,7 +76,17 @@ public class PlayerScript : MonoBehaviour
         float hozMovement = Input.GetAxis("Horizontal");
         float vertMovement = Input.GetAxis("Vertical");
         rd2d.AddForce(new Vector2(hozMovement * speed, vertMovement * speed));
+
+        if (facingRight == false && hozMovement > 0)
+        {
+        Flip();
+        }
+        else if (facingRight == true && hozMovement < 0)
+        {
+        Flip();
+        }
     }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -88,7 +99,7 @@ public class PlayerScript : MonoBehaviour
 
         if (scoreValue == 4)
           {
-            transform.position = new Vector2(46.03f, -0.19f);
+            transform.position = new Vector2(46.03f, 1.9f);
             livesValue = 3;
             SetLivesText();
           }
@@ -138,4 +149,12 @@ public class PlayerScript : MonoBehaviour
         musicSource.Play();
     }
   }
+
+  void Flip()
+   {
+     facingRight = !facingRight;
+     Vector2 Scaler = transform.localScale;
+     Scaler.x = Scaler.x * -1;
+     transform.localScale = Scaler;
+   }
 }
