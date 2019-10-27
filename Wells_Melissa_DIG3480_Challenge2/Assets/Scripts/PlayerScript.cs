@@ -11,6 +11,12 @@ public class PlayerScript : MonoBehaviour
     public Text livesText; //lives text
     public Text winText; //win text
 
+    public AudioClip musicClipOne;
+    public AudioClip musicClipTwo;
+    public AudioSource musicSource;
+
+    Animator anim;
+
     private int scoreValue = 0; //score deafault
     private int livesValue = 3; //lives default
 
@@ -21,13 +27,46 @@ public class PlayerScript : MonoBehaviour
         score.text = "Score: " + scoreValue.ToString();
         winText.text = "";
         livesText.text = "Lives: " + livesValue.ToString();
-    }
+
+        musicSource.clip = musicClipOne;
+        musicSource.Play();
+
+        anim = GetComponent<Animator>();
+      }
 
     public void Update()
     {
-      if (Input.GetKeyDown(KeyCode.Escape)) {
-        Application.Quit();
-      }
+      if (Input.GetKeyDown(KeyCode.D))
+           {
+                anim.SetInteger("State", 1);
+           }
+
+      if (Input.GetKeyUp(KeyCode.D))
+           {
+                anim.SetInteger("State", 0);
+           }
+
+      if (Input.GetKeyDown(KeyCode.A))
+          {
+                anim.SetInteger("State", 1);
+          }
+
+      if (Input.GetKeyUp(KeyCode.A))
+           {
+                anim.SetInteger("State", 0);
+           }
+
+       if (Input.GetKeyDown(KeyCode.W))
+            {
+                 anim.SetInteger("State", 2);
+            }
+
+        if (Input.GetKeyUp(KeyCode.W))
+            {
+                 anim.SetInteger("State", 0);
+            }
+
+
     }
 
     // Update is called once per frame
@@ -48,23 +87,34 @@ public class PlayerScript : MonoBehaviour
         }
 
         if (scoreValue == 4)
-        transform.position = new Vector2(46.03f, -0.19f);
+          {
+            transform.position = new Vector2(46.03f, -0.19f);
+            livesValue = 3;
+            SetLivesText();
+          }
 
         if (scoreValue >= 8)
             //... then set the text property of our winText object to "You win!"
             winText.text = "You win! Game created by Melissa Wells.";
+            MusicControl();
 
-        else if (collision.gameObject.CompareTag("Enemy")) {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
             collision.gameObject.SetActive(false);
             //count = count - 1; subtract one point from countText
             livesValue = livesValue - 1;
             SetLivesText();
+        }
 
-    }
+        if (livesValue == 0)
+        {
+          winText.text = "You Lose. Game created by Melissa Wells.";
+          Destroy(this);
+        }
 
     void SetLivesText()
     {
-        //Set the text property of our our countText object to "Count: " followed by the number stored in our count variable.
+        //setting lives text information
         livesText.text = "Lives: " + livesValue.ToString ();
         }
     }
@@ -79,4 +129,13 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
+
+    void MusicControl()
+    {
+      if (scoreValue == 8)
+      {
+        musicSource.clip = musicClipTwo;
+        musicSource.Play();
+    }
+  }
 }
